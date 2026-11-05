@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Results Management System</title>
+</head>
+<body>
+ 
+    <h1>Student Results Management System</h1>
+    <p>Open the browser Console to see the results.</p>
+ 
+    <script>
+ 
+        // 1. Student Class
+        class Student {
+ 
+            constructor(id, name, grades, attendance) {
+                this.id = id;
+                this.name = name;
+                this.grades = grades;
+                this.attendance = attendance;
+            }
+ 
+            // 2. Calculate Average using reduce
+            calculateAverage() {
+                let total = this.grades.reduce((sum, grade) => {
+                    return sum + grade;
+                }, 0);
+ 
+                return total / this.grades.length;
+            }
+ 
+            // 3. Calculate Grade
+            calculateGrade(average) {
+ 
+                if (average >= 90) {
+                    return "A";
+                } else if (average >= 80) {
+                    return "B";
+                } else if (average >= 70) {
+                    return "C";
+                } else if (average >= 60) {
+                    return "D";
+                } else if (average >= 50) {
+                    return "E";
+                } else {
+                    return "F";
+                }
+            }
+ 
+            // 4. Calculate Final Result
+            getFinalResult(average) {
+ 
+                if (average >= 50 && this.attendance >= 75) {
+                    return "ناجح";
+                } else {
+                    return "يحتاج مراجعة";
+                }
+            }
+        }
+ 
+ 
+        // 5. Create Students Objects
+        let studentsList = [
+ 
+            new Student(1, "Ahmed", [45, 56, 64], 90),
+ 
+            new Student(2, "Lili", [68, 80, 75], 85),
+ 
+            new Student(3, "Hamza", [80, 85, 90], 95),
+ 
+            new Student(4, "shrouk", [90, 95, 90], 80)
+ 
+        ];
+ 
+ 
+        // 6. Filter Students who need Mercy Marks
+        let strugglingStudents = studentsList.filter(student => {
+ 
+            let average = student.calculateAverage();
+ 
+            return average >= 40 && average <= 49;
+ 
+        });
+ 
+ 
+        // 7. Add 5 Mercy Marks using map
+        let studentsAfterGrace = strugglingStudents.map(student => {
+ 
+            let oldAverage = student.calculateAverage();
+ 
+            let newAverage = Math.min(oldAverage + 5, 100);
+ 
+            return {
+                id: student.id,
+                name: student.name,
+                oldAverage: oldAverage,
+                newAverage: newAverage
+            };
+ 
+        });
+ 
+ 
+        // 8. Calculate Total New Averages using reduce
+        let totalNewAverages = studentsAfterGrace.reduce((sum, student) => {
+ 
+            return sum + student.newAverage;
+ 
+        }, 0);
+ 
+ 
+        // 9. Calculate Average after Mercy Marks
+        // Protect against division by zero
+        let mercyAverage = studentsAfterGrace.length > 0
+            ? totalNewAverages / studentsAfterGrace.length
+            : 0;
+ 
+ 
+        // 10. Print Report for Every Student
+        console.log("===== STUDENT RESULTS REPORT =====");
+ 
+        studentsList.forEach(student => {
+ 
+            let average = student.calculateAverage();
+ 
+            let grade = student.calculateGrade(average);
+ 
+            let result = student.getFinalResult(average);
+ 
+            console.log("-----------------------------");
+ 
+            console.log("Student Name:", student.name);
+            console.log("Average:", average.toFixed(2));
+            console.log("Grade:", grade);
+            console.log("Final Result:", result);
+ 
+        });
+ 
+ 
+        // 11. Print Struggling Students after Mercy Marks
+        console.log("===== STUDENTS AFTER MERCY MARKS =====");
+ 
+        console.table(studentsAfterGrace);
+ 
+ 
+        // 12. Print General Mercy Average
+        console.log("===== MERCY AVERAGE =====");
+ 
+        console.log("Number of Struggling Students:",
+            studentsAfterGrace.length);
+ 
+        console.log("Average after Mercy Marks:",
+            mercyAverage.toFixed(2));
+ 
+    </script>
+ 
+</body>
+</html>
